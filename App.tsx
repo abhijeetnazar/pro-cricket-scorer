@@ -1005,7 +1005,7 @@ const BallDisplay: React.FC<{ ball: Ball, settings: MatchSettings }> = ({ ball, 
     return <div className={`${baseClasses} ${classes}`}>{content}</div>;
 };
 
-const InningsTimeline: React.FC<{ inning: Inning; players: Player[]; settings: MatchSettings }> = ({ inning, players, settings }) => {
+const InningsTimeline: React.FC<{ inning: Inning; players: Player[]; settings: MatchSettings; title?: string }> = ({ inning, players, settings, title }) => {
     const getPlayerName = (id: string) => players.find(p => p.id === id)?.name || 'Unknown';
 
     // Group balls by over number from timeline
@@ -1025,7 +1025,7 @@ const InningsTimeline: React.FC<{ inning: Inning; players: Player[]; settings: M
 
     return (
         <Card>
-            <h3 className="text-lg font-semibold mb-3">Ball-by-Ball</h3>
+            <h3 className="text-lg font-semibold mb-3">{title || 'Ball-by-Ball'}</h3>
             <div className="space-y-4 max-h-[26rem] overflow-y-auto pr-2">
                 {/* Render current over if it's new and has no balls */}
                 {bowledOverNumbers[0] !== inning.overs && !hasNoBallsBowled && inning.currentBowlerId && (
@@ -1215,9 +1215,30 @@ const LiveScoringPage: React.FC<{
     }, [activeMatch, updateMatch, teams, addToHistory]);
 
     if (activeMatch.status === 'Finished') {
+        const { inning1, inning2, settings } = activeMatch;
         return (
             <div className="space-y-6">
                 <Scorecard match={activeMatch} teams={teams} players={players} />
+
+                <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    {inning1 && (
+                        <InningsTimeline 
+                            inning={inning1} 
+                            players={players} 
+                            settings={settings} 
+                            title={`${teams.find(t => t.id === inning1.battingTeamId)?.name || 'Innings 1'} Ball-by-Ball`}
+                        />
+                    )}
+                    {inning2 && (
+                        <InningsTimeline 
+                            inning={inning2} 
+                            players={players} 
+                            settings={settings}
+                            title={`${teams.find(t => t.id === inning2.battingTeamId)?.name || 'Innings 2'} Ball-by-Ball`}
+                        />
+                    )}
+                </div>
+
                 <div className="flex justify-center">
                     <Button 
                         onClick={handleUndo} 
@@ -2305,10 +2326,10 @@ const StatsPage: React.FC = () => {
         return sortableItems;
     }, [playerStats, sortConfig]);
 
-    // FIX: Explicitly typing the new sort direction prevents a potential TypeScript error where the ternary operator's result is inferred as `string` instead of the specific `SortDirection` union type.
     const requestSort = (key: string, defaultDirection: SortDirection = 'descending') => {
         if (sortConfig.key === key) {
             // If it's the same key, toggle the direction
+            // FIX: Explicitly typing the new sort direction prevents a potential TypeScript error where the ternary operator's result is inferred as `string` instead of the specific `SortDirection` union type.
             const newDirection: SortDirection = sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
             setSortConfig({
                 key,
@@ -2923,7 +2944,7 @@ const LoginPage: React.FC = () => {
 // Main App Component
 
 const App: React.FC = () => {
-    const { isAuthenticated, activeMatch, updateMatch, matches } = useApp();
+    const { isAuthenticated, activeMatch, updateMatch, matches, isLoading } = useApp();
     const [currentPage, setCurrentPage] = useState('dashboard');
     const [history, setHistory] = useState<Record<string, Match[]>>(() => {
         try {
@@ -2944,6 +2965,10 @@ const App: React.FC = () => {
     }, [history]);
 
     useEffect(() => {
+        // Only run cleanup logic if authenticated and not loading.
+        // This prevents wiping history on initial load before matches are fetched from the database.
+        if (!isAuthenticated || isLoading) return;
+
         const matchIds = new Set(matches.map(m => m.id));
         setHistory(prevHistory => {
             const historyKeys = Object.keys(prevHistory);
@@ -2958,7 +2983,7 @@ const App: React.FC = () => {
             }
             return hasChanged ? newHistory : prevHistory;
         });
-    }, [matches]);
+    }, [matches, isAuthenticated, isLoading]);
 
     const addToHistory = (matchState: Match) => {
         if(activeMatch){

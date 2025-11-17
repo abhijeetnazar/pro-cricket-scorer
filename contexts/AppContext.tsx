@@ -16,6 +16,7 @@ interface AppContextType {
   matches: Match[];
   activeMatch: Match | null;
   theme: string;
+  isLoading: boolean;
   setTheme: (themeName: string) => void;
   login: () => void;
   logout: () => void;
@@ -403,7 +404,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const value = {
     isAuthenticated, players, teams, matches, activeMatch, login, logout, addPlayer, deletePlayer, addTeam,
     deleteTeam, updateTeam, createMatch, setActiveMatchId, updateMatch, deleteMatch, importFromGoogleSheet,
-    importMatchData, updatePlayer, theme, setTheme, backupAllData, restoreAllData,
+    importMatchData, updatePlayer, theme, setTheme, backupAllData, restoreAllData, isLoading,
   };
 
   if (isLoading) {
