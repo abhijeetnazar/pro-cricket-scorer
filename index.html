@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pro Cricket Scorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --cricket-green: #28a745;
+        --pitch-dark: #121212;
+        --night-gray: #1e1e1e;
+        --light-gray: #2a2a2a;
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --accent-blue: #007bff;
+        --accent-yellow: #ffc107;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'cricket-green': 'var(--cricket-green)',
+              'pitch-dark': 'var(--pitch-dark)',
+              'night-gray': 'var(--night-gray)',
+              'light-gray': 'var(--light-gray)',
+              'text-primary': 'var(--text-primary)',
+              'text-secondary': 'var(--text-secondary)',
+              'accent-blue': 'var(--accent-blue)',
+              'accent-yellow': 'var(--accent-yellow)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "immer": "https://aistudiocdn.com/immer@^10.1.3",
+    "idb": "https://aistudiocdn.com/idb@^8.0.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-pitch-dark text-text-primary">
+    <div id="root"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

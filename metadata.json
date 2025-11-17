@@ -1,0 +1,5 @@
+{
+  "name": "Pro Cricket Scorer",
+  "description": "A modern, feature-rich cricket scoring application built with React and Tailwind CSS. It allows users to create teams, add players, set up matches with custom rules, and perform live ball-by-ball scoring with a sleek, intuitive interface.",
+  "requestFramePermissions": []
+}
